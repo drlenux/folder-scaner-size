@@ -1,6 +1,7 @@
 # Binary
 /folder-size
 /dist/
+.gocache/
 
 # Go
 *.exe
