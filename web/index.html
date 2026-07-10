@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Folder Size</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" title="Folder Size">
+      <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.17a1.5 1.5 0 0 1 1.06.44l1.12 1.12H19.5A1.5 1.5 0 0 1 21 8v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5v-11Z"/>
+        <path d="M6 14.5h12v1.2H6zm0-3h8v1.2H6z" fill="currentColor" opacity=".55"/>
+      </svg>
+      <span>Folder Size</span>
+    </div>
+
+    <form id="scan-form" class="scan-form" autocomplete="off">
+      <input id="path-input" type="text" placeholder="Путь для сканирования…" spellcheck="false" />
+      <button id="scan-btn" type="submit">Сканировать</button>
+      <button id="cancel-btn" type="button" class="ghost hidden">Отмена</button>
+    </form>
+
+    <span id="conn" class="conn offline" title="Нет соединения" aria-label="Статус соединения"></span>
+  </header>
+
+  <section id="progress" class="progress hidden" aria-live="polite">
+    <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+    <div class="progress-text">
+      <span id="progress-stats">Инициализация…</span>
+      <span id="progress-current" class="muted path-ellip"></span>
+    </div>
+  </section>
+
+  <section id="summary" class="summary hidden">
+    <div class="stat">
+      <span class="stat-label">На диске</span>
+      <span id="stat-size" class="stat-value">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Файлов</span>
+      <span id="stat-files" class="stat-value">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Элементов</span>
+      <span id="stat-items" class="stat-value">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Освобождено</span>
+      <span id="stat-freed" class="stat-value accent">0 B</span>
+    </div>
+  </section>
+
+  <div id="treemap" class="treemap hidden" title="Доли по размеру"></div>
+
+  <div id="toolbar" class="toolbar hidden">
+    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Путь"></nav>
+    <div class="toolbar-right">
+      <input id="filter" type="search" placeholder="Фильтр…" spellcheck="false" />
+      <select id="sort" aria-label="Сортировка">
+        <option value="size-desc">Размер ↓</option>
+        <option value="size-asc">Размер ↑</option>
+        <option value="name-asc">Имя A–Z</option>
+        <option value="name-desc">Имя Z–A</option>
+        <option value="files-desc">Файлов ↓</option>
+      </select>
+    </div>
+  </div>
+
+  <main class="content">
+    <div id="empty" class="empty">
+      <h1>Куда делось место?</h1>
+      <p>Выберите папку — приложение обойдёт дерево асинхронно, посчитает размеры
+         и закеширует результат. Дальше навигация мгновенная.</p>
+      <div id="quick-paths" class="chips"></div>
+      <div id="recent-paths" class="chips recent"></div>
+      <p class="hint">Клавиши: <kbd>↑</kbd><kbd>↓</kbd> выбор · <kbd>Enter</kbd> открыть · <kbd>Backspace</kbd> вверх · <kbd>Del</kbd> удалить</p>
+    </div>
+    <ul id="list" class="list" tabindex="0" role="listbox" aria-label="Содержимое папки"></ul>
+  </main>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <h2 id="modal-title">Удалить?</h2>
+      <p id="modal-body" class="modal-body"></p>
+      <div class="modal-actions">
+        <button id="modal-cancel" type="button" class="ghost">Отмена</button>
+        <button id="modal-ok" type="button" class="danger">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
