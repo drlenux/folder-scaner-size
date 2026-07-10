@@ -1,5 +1,6 @@
 # Binary
 /folder-size
+/dist/
 
 # Go
 *.exe
